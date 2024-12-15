@@ -63,6 +63,10 @@ public class RegionController {
     }
 
     @Operation(summary = "Get region by ID", description = "Fetch a specific region by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Region found"),
+            @ApiResponse(responseCode = "404", description = "Region not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<?> getRegionById(@PathVariable Long id) {
         try {
@@ -89,13 +93,18 @@ public class RegionController {
     }
 
     @Operation(summary = "Update region by ID", description = "Update a specific region by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Region updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Region or country not found")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRegion(@PathVariable Long id, @RequestBody RegionDTO updatedRegion) {
         try {
             RegionDTO region = regionService.updateRegion(id, updatedRegion);
             return ResponseEntity.ok(region);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
